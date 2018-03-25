@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <link rel="icon" href="../../../../favicon.ico"/>
+
+    <title>Kwetter Admin panel</title>
+
+    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://getbootstrap.com/docs/4.0/examples/sticky-footer-navbar/sticky-footer-navbar.css"
+          rel="stylesheet"/>
+</h:head>
+
+<h:body>
+    <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="#">Kwetter</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <h:link value="home" outcome="/index" styleClass="nav-link"/>
+                    </li>
+                    <li class="nav-item active">
+                        <h:link value="admin" outcome="/admin/index" styleClass="nav-link"/>
+                    </li>
+                    <li>
+                        <span class="navbar-text pull-right">
+                            ${administrationBean.username}
+                        </span>
+                    </li>
+                </ul>
+                <form class="form-inline mt-2 mt-md-0">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"/>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Begin page content -->
+    <main role="main" class="container">
+        <div class="card">
+            <h5 class="card-header">Tweets</h5>
+            <div class="card-body">
+                <h:dataTable value="#{administrationBean.kweets}" var="kweet" styleClass="table">
+                    <h:column>
+                        <f:facet name="header">Tweet</f:facet>
+                        ${kweet.text}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">User</f:facet>
+                        ${kweet.user.username}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Date</f:facet>
+                        ${kweet.date}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Action</f:facet>
+                        <h:form>
+                            <h:commandButton value="Delete" type="submit"
+                                             action="#{administrationBean.removeKweet(kweet.id)}"
+                                             styleClass="btn btn-danger">
+                            </h:commandButton>
+                        </h:form>
+                    </h:column>
+                </h:dataTable>
+            </div>
+        </div>
+
+        <div class="card">
+            <h5 class="card-header">Users</h5>
+            <div class="card-body">
+                <h:dataTable value="#{administrationBean.users}" var="user" styleClass="table">
+                    <h:column>
+                        <f:facet name="header">Username</f:facet>
+                        ${user.username}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Email</f:facet>
+                        ${user.email}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Location</f:facet>
+                        ${user.location}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Role</f:facet>
+                    </h:column>
+                </h:dataTable>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <span class="text-muted">Place sticky footer content here.</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/popper.js@1.12.9/dist/umd/popper.js"></script>
+    <script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+</h:body>
+</html>
