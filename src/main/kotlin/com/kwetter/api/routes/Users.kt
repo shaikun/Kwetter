@@ -6,6 +6,7 @@ import javax.ejb.Stateless
 import javax.inject.Inject
 import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
+import javax.ws.rs.FormParam
 import javax.ws.rs.GET
 import javax.ws.rs.POST
 import javax.ws.rs.PUT
@@ -30,7 +31,6 @@ class Users {
      * Get all users endpoint
      */
     @GET
-    @Path("")
     @Produces("application/json")
     fun all(): Set<User> {
         return userService.all()
@@ -47,13 +47,17 @@ class Users {
         return userService.find(id)
     }
 
-    /**
-     * Create User endpoint
-     * @param user: User
-     */
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    fun create(user: User): User {
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED, MediaType.MULTIPART_FORM_DATA)
+    @Path("create")
+    fun create(@FormParam("bio") bio: String,
+               @FormParam("email") email: String,
+               @FormParam("location") location: String,
+               @FormParam("password") password: String,
+               @FormParam("username") username: String,
+               @FormParam("website") website: String): User {
+        val user = User(username, email, password, location, website, bio)
+
         return userService.create(user)
     }
 
@@ -81,9 +85,9 @@ class Users {
      * Follow User endpoint
      * @param id: User.id - User who gets followed
      */
-    @POST
-    @Path("/{id}/follow")
-    fun follow(@PathParam("id") id: Long): User {
-        return userService.follow(id)
-    }
+//    @POST
+//    @Path("/{id}/follow")
+//    fun follow(@PathParam("id") id: Long): User {
+//        return userService.follow(id)
+//    }
 }

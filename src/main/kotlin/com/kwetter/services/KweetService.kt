@@ -1,7 +1,9 @@
 package com.kwetter.services
 
 import com.kwetter.dao.KweetDao
+import com.kwetter.dao.UserDao
 import com.kwetter.models.Kweet
+import java.util.Date
 import javax.ejb.Stateless
 import javax.inject.Inject
 
@@ -12,6 +14,12 @@ class KweetService {
      */
     @Inject
     private lateinit var kweetDao: KweetDao
+
+    /**
+     * KweetDao instance.
+     */
+    @Inject
+    private lateinit var userDao: UserDao
 
     /**
      * Retrieve all Kweets
@@ -30,8 +38,13 @@ class KweetService {
     /**
      * Create Kweet
      */
-    fun create(model: Kweet): Kweet {
-        return kweetDao.create(model)
+    fun create(text: String, email: String): Kweet {
+        val user = userDao.findByEmail(email)
+
+        val tweet = Kweet(text, Date())
+        tweet.user = user
+
+        return kweetDao.create(tweet)
     }
 
     /**

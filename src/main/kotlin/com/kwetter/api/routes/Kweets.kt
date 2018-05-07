@@ -2,10 +2,14 @@ package com.kwetter.api.routes
 
 import com.kwetter.models.Kweet
 import com.kwetter.services.KweetService
+import com.kwetter.services.UserService
 import javax.ejb.Stateless
 import javax.inject.Inject
+import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
+import javax.ws.rs.FormParam
 import javax.ws.rs.GET
+import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.PathParam
 import javax.ws.rs.Produces
@@ -22,6 +26,12 @@ class Kweets {
      */
     @Inject
     private lateinit var kweetService: KweetService
+
+    /**
+     * UserService instance.
+     */
+    @Inject
+    private lateinit var userService: UserService
 
     /**
      * Get all Kweets endpoint
@@ -53,5 +63,14 @@ class Kweets {
     fun remove(@PathParam("id") id: Long): Response {
         kweetService.remove(id)
         return Response.status(Response.Status.OK).build() // returns 200 code
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED, MediaType.MULTIPART_FORM_DATA)
+    @Path("/create")
+    fun create(@FormParam("text") text: String, @FormParam("user_id") user_id: String): Kweet {
+        val user = userService.find(user_id.toLong())
+
+        return kweetService.create(text, user.email)
     }
 }

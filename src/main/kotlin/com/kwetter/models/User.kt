@@ -9,12 +9,10 @@ import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.JoinTable
-import javax.persistence.ManyToMany
 import javax.persistence.NamedQuery
 import javax.persistence.OneToMany
 import javax.persistence.Table
+import javax.persistence.Transient
 
 @Entity
 @NamedQuery(name = "findByUsername", query = "SELECT u FROM User u WHERE u.username = :username")
@@ -24,24 +22,23 @@ data class User(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null, //nullable because of kotlin, instead of -1.
         @Column(unique = true)
-        val username: String,
+        var username: String,
         @Column(unique = true)
-        val email: String,
+        var email: String,
         @JsonIgnore
-        val password: String,
-        val bio: String,
-        val location: String,
-        val website: String
+        var password: String,
+        var bio: String,
+        var location: String,
+        var website: String
 ) : Serializable {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = [CascadeType.REMOVE])
     var kweets: Set<Kweet> = emptySet()
-    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
-    @JoinTable(
-            name = "followers",
-            joinColumns = [(JoinColumn(name = "user_id", referencedColumnName = "id"))],
-            inverseJoinColumns = [(JoinColumn(name = "follower_id", referencedColumnName = "id"))]
-    )
-    var followers: Set<User> = emptySet() // might change to following, not yet decided.
+
+    @Transient
+    var following: Set<User> = emptySet()
+
+    @Transient
+    var followers: Set<User> = emptySet()
 
     //needed for kotlin to be able to init and persist with id null.
     constructor(username: String, email: String, password: String, location: String, website: String,

@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.2.31'
 
     repositories {
         mavenCentral()
@@ -8,6 +8,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
     }
 }
 
@@ -29,6 +30,13 @@ dependencies {
     compileOnly group: 'javax', name: 'javaee-api', version: '8.0'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.13.Final'
     compile group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '2.26'
+    compile group: 'com.auth0', name: 'java-jwt', version: '3.3.0'
+    compile group: 'com.pusher', name: 'pusher-http-java', version: '1.0.0'
+    testCompile group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.1.0'
+    testCompile group: 'org.glassfish.main.extras', name: 'glassfish-embedded-all', version: '5.0'
+    testCompile group: 'org.jboss.arquillian.core', name: 'arquillian-core-api', version: '1.4.0.Final'
+    testCompile group: 'org.jboss.arquillian.container', name: 'arquillian-glassfish-embedded-3.1', version: '1.0.2'
+    testCompile group: 'org.jboss.arquillian.junit', name: 'arquillian-junit-container', version: '1.4.0.Final'
 }
 
 allOpen {

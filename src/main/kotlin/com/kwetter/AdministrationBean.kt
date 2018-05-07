@@ -3,6 +3,7 @@ package com.kwetter
 import com.kwetter.models.Kweet
 import com.kwetter.models.User
 import com.kwetter.services.KweetService
+import com.kwetter.services.MailService
 import com.kwetter.services.UserService
 import java.io.Serializable
 import javax.annotation.PostConstruct
@@ -15,6 +16,9 @@ import javax.inject.Named
 class AdministrationBean : Serializable {
     @Inject
     private lateinit var kweetService: KweetService
+
+    @Inject
+    private lateinit var mailService: MailService
 
     @Inject
     private lateinit var userService: UserService
@@ -35,5 +39,9 @@ class AdministrationBean : Serializable {
     fun removeKweet(kweet: Kweet) {
         kweetService.remove(kweet.id!!)
         kweets.remove(kweet)
+    }
+
+    fun mail(string: String) {
+        mailService.mail(string)
     }
 }

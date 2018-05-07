@@ -9,16 +9,9 @@ import javax.persistence.PersistenceContext
 abstract class AbstractDao<T : Serializable> {
 
     @PersistenceContext
-    private lateinit var entityManager: EntityManager
+    lateinit var entityManager: EntityManager
 
     protected abstract fun getEntityClass(): Class<T>
-
-    /**
-     * Retrieve the entity manager instance
-     */
-    fun getEntityManager(): EntityManager {
-        return entityManager
-    }
 
     /**
      * Get all records by model class name
