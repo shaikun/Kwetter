@@ -19,8 +19,9 @@ data class Kweet(
         val id: Long? = null, //nullable kotlin, instead of -1.
         val text: String,
         val date: Date) : Serializable {
+
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     lateinit var user: User //used val instead of var because it has to be mutable when using lateinit.
 
     //needed for kotlin to be able to init and persist with id null.

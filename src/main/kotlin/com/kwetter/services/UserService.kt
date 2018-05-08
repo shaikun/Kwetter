@@ -3,6 +3,7 @@ package com.kwetter.services
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.kwetter.dao.UserDao
+import com.kwetter.models.Kweet
 import com.kwetter.models.User
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
@@ -23,7 +24,7 @@ class UserService {
     /**
      * Retrieve all users
      */
-    fun all(): Set<User> {
+    fun all(): List<User> {
         return userDao.all()
     }
 
@@ -58,6 +59,10 @@ class UserService {
      */
     fun remove(id: Long) {
         return userDao.remove(find(id))
+    }
+
+    fun kweets(id: Long): List<Kweet> {
+        return userDao.kweets(id)
     }
 
     /**

@@ -46,10 +46,10 @@ class UserDao : AbstractDao<User>() {
     }
 
     fun kweets(id: Long): List<Kweet> {
-        val sql = "SELECT t.* FROM tweets t " +
-                "JOIN following f ON (t.user_id IN (SELECT follower_id FROM following WHERE user_id = ?1)) " +
+        val sql = "SELECT k.* FROM kweets k " +
+                "JOIN followers f ON (k.user_id IN (SELECT follower_id FROM followers WHERE user_id = ?1)) " +
                 "UNION " +
-                "SELECT * FROM tweets WHERE user_id = ?1 " +
+                "SELECT * FROM kweets WHERE user_id = ?1 " +
                 "ORDER BY `date` DESC"
 
         val query = entityManager.createNativeQuery(sql, Kweet::class.java)

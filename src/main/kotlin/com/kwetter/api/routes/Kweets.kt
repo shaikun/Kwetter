@@ -38,7 +38,7 @@ class Kweets {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    fun all(): Set<Kweet> {
+    fun all(): List<Kweet> {
         return kweetService.all()
     }
 

@@ -16,11 +16,11 @@ abstract class AbstractDao<T : Serializable> {
     /**
      * Get all records by model class name
      */
-    fun all(): Set<T> {
+    fun all(): List<T> {
         val c = entityManager.criteriaBuilder.createQuery(getEntityClass())
         c.from(getEntityClass())
         val query = entityManager.createQuery(c)
-        return HashSet<T>(query.resultList)
+        return query.resultList
     }
 
     /**

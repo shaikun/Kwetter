@@ -24,7 +24,7 @@ class KweetService {
     /**
      * Retrieve all Kweets
      */
-    fun all(): Set<Kweet> {
+    fun all(): List<Kweet> {
         return kweetDao.all()
     }
 

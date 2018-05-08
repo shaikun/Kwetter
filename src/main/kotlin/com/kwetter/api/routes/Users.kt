@@ -1,5 +1,6 @@
 package com.kwetter.api.routes
 
+import com.kwetter.models.Kweet
 import com.kwetter.models.User
 import com.kwetter.services.UserService
 import javax.ejb.Stateless
@@ -32,7 +33,7 @@ class Users {
      */
     @GET
     @Produces("application/json")
-    fun all(): Set<User> {
+    fun all(): List<User> {
         return userService.all()
     }
 
@@ -79,6 +80,24 @@ class Users {
     @PUT
     fun update(user: User): User {
         return userService.update(user)
+    }
+
+    @GET
+    @Path("/{id}/followers")
+    fun followers(@PathParam("id") id: Long): List<User> {
+        return userService.followers(id)
+    }
+
+    @GET
+    @Path("/{id}/following")
+    fun following(@PathParam("id") id: Long): List<User> {
+        return userService.following(id)
+    }
+
+    @GET
+    @Path("/{id}/kweets")
+    fun tweets(@PathParam("id") id: Long): List<Kweet> {
+        return userService.kweets(id)
     }
 
     /**
