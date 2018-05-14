@@ -26,7 +26,7 @@ class UserDao : AbstractDao<User>() {
     }
 
     fun followers(id: Long): List<User> {
-        val sql = "SELECT * FROM users WHERE id IN (SELECT user_id FROM following WHERE `follower_id` = ?1)"
+        val sql = "SELECT * FROM users WHERE id IN (SELECT user_id FROM followers WHERE `follower_id` = ?1)"
 
         val query = entityManager.createNativeQuery(sql, User::class.java)
         query.setParameter(1, id)
@@ -36,7 +36,7 @@ class UserDao : AbstractDao<User>() {
     }
 
     fun following(id: Long): List<User> {
-        val sql = "SELECT * FROM users WHERE id IN (SELECT follower_id FROM following WHERE user_id = ?1)"
+        val sql = "SELECT * FROM users WHERE id IN (SELECT follower_id FROM followers WHERE user_id = ?1)"
 
         val query = entityManager.createNativeQuery(sql, User::class.java)
         query.setParameter(1, id)

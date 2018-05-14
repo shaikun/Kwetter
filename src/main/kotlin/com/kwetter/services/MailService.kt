@@ -1,5 +1,6 @@
 package com.kwetter.services
 
+import com.kwetter.models.User
 import java.util.Date
 import javax.annotation.Resource
 import javax.ejb.Stateless
@@ -18,20 +19,24 @@ class MailService {
     @Resource(name = "mail/kwetter")
     private lateinit var session: Session
 
-    fun mail(string: String) {
+    fun mailRegister(user: User) {
+        this.mail("Thank you for registering ${user.username}", "Thank you for registering", "shaikunll@gmail.com")
+    }
+
+    fun mail(text: String, subject: String, recipient: String) {
         val message: Message = MimeMessage(session)
 
-        message.subject = "subject"
+        message.subject = subject
         message.setFrom(InternetAddress.parse("shaikunll@gmail.com", false)[0])
 
         // Adjust to, cc, bcc: comma-separated Strings of email addresses
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("shaikunll@gmail.com", false))
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient, false))
 
         // Create the message body part
         val messageBodyPart = MimeBodyPart()
 
         // Insert the message's body
-        messageBodyPart.setText(string)
+        messageBodyPart.setText(text)
 
         // create a multipart for different parts of the message
         val multipart = MimeMultipart()
@@ -53,7 +58,5 @@ class MailService {
         // Use the 'send' static method of the Transport
         // class to send the message
         Transport.send(message)
-
-
     }
 }

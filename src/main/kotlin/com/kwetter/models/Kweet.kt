@@ -1,6 +1,5 @@
 package com.kwetter.models
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import java.io.Serializable
 import java.util.Date
 import javax.persistence.Entity
@@ -20,7 +19,6 @@ data class Kweet(
         val text: String,
         val date: Date) : Serializable {
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     lateinit var user: User //used val instead of var because it has to be mutable when using lateinit.
 

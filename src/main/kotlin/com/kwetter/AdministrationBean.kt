@@ -40,8 +40,4 @@ class AdministrationBean : Serializable {
         kweetService.remove(kweet.id!!)
         kweets.remove(kweet)
     }
-
-    fun mail(string: String) {
-        mailService.mail(string)
-    }
 }

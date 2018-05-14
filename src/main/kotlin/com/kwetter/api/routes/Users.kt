@@ -1,8 +1,9 @@
 package com.kwetter.api.routes
 
-import com.kwetter.models.Kweet
 import com.kwetter.models.User
+import com.kwetter.services.MailService
 import com.kwetter.services.UserService
+import java.util.HashMap
 import javax.ejb.Stateless
 import javax.inject.Inject
 import javax.ws.rs.Consumes
@@ -17,6 +18,7 @@ import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
 
+
 @Stateless
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -27,6 +29,12 @@ class Users {
      */
     @Inject
     private lateinit var userService: UserService
+
+    /**
+     * MailService instance.
+     */
+    @Inject
+    private lateinit var mailService: MailService
 
     /**
      * Get all users endpoint
@@ -44,8 +52,14 @@ class Users {
     @GET
     @Path("/{id}")
     @Produces("application/json")
-    fun getById(@PathParam("id") id: Long): User {
-        return userService.find(id)
+    fun getById(@PathParam("id") id: Long): Response {
+
+        val response = HashMap<String, Any>()
+        response["success"] = true
+        response["data"] = userService.find(id)
+        response["message"] = "Single User with id $id"
+
+        return Response.ok(response).build()
     }
 
     @POST
@@ -57,9 +71,12 @@ class Users {
                @FormParam("password") password: String,
                @FormParam("username") username: String,
                @FormParam("website") website: String): User {
-        val user = User(username, email, password, location, website, bio)
+        var user = User(username, email, password, location, website, bio)
 
-        return userService.create(user)
+        user = userService.create(user)
+        mailService.mailRegister(user)
+
+        return user
     }
 
     /**
@@ -96,8 +113,14 @@ class Users {
 
     @GET
     @Path("/{id}/kweets")
-    fun tweets(@PathParam("id") id: Long): List<Kweet> {
-        return userService.kweets(id)
+    fun tweets(@PathParam("id") id: Long): Response {
+
+        val response = HashMap<String, Any>()
+        response["success"] = true
+        response["data"] = userService.kweets(id)
+        response["message"] = "List of kweets"
+
+        return Response.ok(response).build()
     }
 
     /**

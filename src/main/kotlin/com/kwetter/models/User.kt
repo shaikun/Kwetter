@@ -31,6 +31,8 @@ data class User(
         var location: String,
         var website: String
 ) : Serializable {
+
+    @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = [CascadeType.REMOVE])
     var kweets: Set<Kweet> = emptySet()
 
