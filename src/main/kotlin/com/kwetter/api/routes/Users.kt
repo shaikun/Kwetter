@@ -59,7 +59,13 @@ class Users {
         response["data"] = userService.find(id)
         response["message"] = "Single User with id $id"
 
-        return Response.ok(response).build()
+        return Response.ok(response)
+                .link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/users/$id/kweets",
+                      "User timeline")
+                .link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/users/$id/followers",
+                      "All users who are following th given user")
+                .link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/users/$id/following",
+                      "All users which the giver user is following").build()
     }
 
     @POST
@@ -120,7 +126,7 @@ class Users {
         response["data"] = userService.kweets(id)
         response["message"] = "List of kweets"
 
-        return Response.ok(response).build()
+        return Response.ok(response).link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/kweets", "").build()
     }
 
     /**
