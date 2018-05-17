@@ -3,8 +3,8 @@ package com.kwetter.dao
 import com.kwetter.models.Group
 import com.kwetter.models.Kweet
 import com.kwetter.models.User
+import java.lang.Exception
 import javax.ejb.Stateless
-import javax.persistence.NoResultException
 
 @Stateless
 class UserDao : AbstractDao<User>() {
@@ -59,20 +59,21 @@ class UserDao : AbstractDao<User>() {
         return query.resultList as List<Kweet>
     }
 
-    fun login(email: String, password: String): Boolean {
-        val sql = "SELECT * FROM users WHERE email = ?1 AND password = ?2"
-
-        val query = entityManager.createNativeQuery(sql, User::class.java)
+    fun login(email: String, password: String): String? {
+        val query = entityManager.createQuery(
+                "SELECT g.groupName FROM User u " +
+                        "INNER JOIN Group g " +
+                        "ON u.email = g.email " +
+                        "WHERE u.email = ?1 AND u.password = ?2",
+                String::class.java)
         query.setParameter(1, email)
         query.setParameter(2, password)
 
-        try {
-            val user = query.singleResult
-        } catch (error: NoResultException) {
-            return false
+        return try {
+            query.singleResult
+        } catch (e: Exception) {
+            null
         }
-
-        return true
     }
 
     override fun create(model: User): User {

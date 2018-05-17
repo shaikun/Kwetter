@@ -13,10 +13,13 @@ import javax.persistence.NamedQuery
 import javax.persistence.OneToMany
 import javax.persistence.Table
 import javax.persistence.Transient
+import javax.xml.bind.annotation.XmlAccessType
+import javax.xml.bind.annotation.XmlAccessorType
 
 @Entity
 @NamedQuery(name = "findByUsername", query = "SELECT u FROM User u WHERE u.username = :username")
 @Table(name = "users")
+@XmlAccessorType(XmlAccessType.FIELD)
 data class User(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)

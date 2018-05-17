@@ -9,9 +9,12 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.ManyToOne
 import javax.persistence.Table
+import javax.xml.bind.annotation.XmlAccessType
+import javax.xml.bind.annotation.XmlAccessorType
 
 @Entity
 @Table(name = "kweets")
+@XmlAccessorType(XmlAccessType.FIELD)
 data class Kweet(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -79,16 +79,8 @@ class UserService {
         return userDao.following(id)
     }
 
-    fun login(email: String, password: String): String {
-        if (!userDao.login(email, encode(password))) {
-            throw Exception("No such combination found")
-        }
-
-        val algorithm = Algorithm.HMAC256("secret")
-
-        return JWT.create()
-                .withIssuer(email)
-                .sign(algorithm)
+    fun login(email: String, password: String): String? {
+        return userDao.login(email, encode(password))
     }
 
     @Throws(UnsupportedEncodingException::class, NoSuchAlgorithmException::class)

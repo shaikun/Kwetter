@@ -12,7 +12,7 @@ class RestResponseFilter : ContainerResponseFilter {
             responseContext.headers.add("Access-Control-Allow-Origin", "*")
             responseContext.headers.add("Access-Control-Allow-Credentials", "true")
             responseContext.headers.add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-            responseContext.headers.add("Access-Control-Allow-Headers", "Content-Type, Accept")
+            responseContext.headers.add("Access-Control-Allow-Headers", "Content-Type, Accept, Authorization")
         }
     }
 }

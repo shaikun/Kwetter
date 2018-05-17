@@ -1,5 +1,6 @@
 package com.kwetter.api.routes
 
+import com.kwetter.api.annotations.Secured
 import com.kwetter.models.User
 import com.kwetter.services.MailService
 import com.kwetter.services.UserService
@@ -52,6 +53,7 @@ class Users {
     @GET
     @Path("/{id}")
     @Produces("application/json")
+    @Secured("users")
     fun getById(@PathParam("id") id: Long): Response {
 
         val response = HashMap<String, Any>()
@@ -66,6 +68,20 @@ class Users {
                       "All users who are following th given user")
                 .link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/users/$id/following",
                       "All users which the giver user is following").build()
+    }
+
+    @GET
+    @Path("/byEmail/{email}")
+    @Produces("application/json")
+    @Secured("users")
+    fun getById(@PathParam("email") email: String): Response {
+
+        val response = HashMap<String, Any>()
+        response["success"] = true
+        response["data"] = userService.findByEmail(email)
+        response["message"] = "Single User with email $email"
+
+        return Response.ok(response).build()
     }
 
     @POST
@@ -91,6 +107,7 @@ class Users {
      */
     @DELETE
     @Path("/{id}")
+    @Secured("users")
     fun remove(@PathParam("id") id: Long): Response {
         userService.remove(id)
         return Response.status(Response.Status.OK).build() // returns 200 code
@@ -101,23 +118,27 @@ class Users {
      * @param user: User
      */
     @PUT
+    @Secured("users")
     fun update(user: User): User {
         return userService.update(user)
     }
 
     @GET
+    @Secured("users")
     @Path("/{id}/followers")
     fun followers(@PathParam("id") id: Long): List<User> {
         return userService.followers(id)
     }
 
     @GET
+    @Secured("users")
     @Path("/{id}/following")
     fun following(@PathParam("id") id: Long): List<User> {
         return userService.following(id)
     }
 
     @GET
+    @Secured("users")
     @Path("/{id}/kweets")
     fun tweets(@PathParam("id") id: Long): Response {
 

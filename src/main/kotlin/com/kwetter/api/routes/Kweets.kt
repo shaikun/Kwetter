@@ -1,5 +1,6 @@
 package com.kwetter.api.routes
 
+import com.kwetter.api.annotations.Secured
 import com.kwetter.models.Kweet
 import com.kwetter.services.KweetService
 import com.kwetter.services.UserService
@@ -22,6 +23,7 @@ import javax.ws.rs.core.Response
 @Stateless
 @Path("/kweets")
 @Produces(MediaType.APPLICATION_JSON)
+@Secured("users")
 class Kweets {
 
     /**
@@ -70,7 +72,6 @@ class Kweets {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED, MediaType.MULTIPART_FORM_DATA)
-    @Path("/create")
     fun create(@FormParam("text") text: String, @FormParam("user_id") user_id: String): Kweet {
         val user = userService.find(user_id.toLong())
 
