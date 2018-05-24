@@ -1,10 +1,10 @@
 package com.kwetter.api.routes
 
 import com.kwetter.api.annotations.Secured
+import com.kwetter.models.Kweet
 import com.kwetter.models.User
 import com.kwetter.services.MailService
 import com.kwetter.services.UserService
-import java.util.HashMap
 import javax.ejb.Stateless
 import javax.inject.Inject
 import javax.ws.rs.Consumes
@@ -16,8 +16,10 @@ import javax.ws.rs.PUT
 import javax.ws.rs.Path
 import javax.ws.rs.PathParam
 import javax.ws.rs.Produces
+import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
+import javax.ws.rs.core.UriInfo
 
 
 @Stateless
@@ -42,8 +44,14 @@ class Users {
      */
     @GET
     @Produces("application/json")
-    fun all(): List<User> {
-        return userService.all()
+    fun all(@Context uriInfo: UriInfo): List<User> {
+        val users = userService.all()
+
+        // Build the URL's
+        users.forEach {
+            it.buildLinks(uriInfo)
+        }
+        return users
     }
 
     /**
@@ -53,34 +61,44 @@ class Users {
     @GET
     @Path("/{id}")
     @Produces("application/json")
-    fun getById(@PathParam("id") id: Long): Response {
+    fun getById(@PathParam("id") id: Long, @Context uriInfo: UriInfo): User {
+        val user = userService.find(id)
 
-        val response = HashMap<String, Any>()
-        response["success"] = true
-        response["data"] = userService.find(id)
-        response["message"] = "Single User with id $id"
+        user.buildLinks(uriInfo)
 
-        return Response.ok(response)
-                .link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/users/$id/kweets",
-                      "User timeline")
-                .link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/users/$id/followers",
-                      "All users who are following th given user")
-                .link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/users/$id/following",
-                      "All users which the giver user is following").build()
+        return user
+
+//        val response = HashMap<String, Any>()
+//        response["success"] = true
+//        response["data"] = userService.find(id)
+//        response["message"] = "Single User with id $id"
+//
+//        return Response.ok(response)
+//                .link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/users/$id/kweets",
+//                      "User timeline")
+//                .link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/users/$id/followers",
+//                      "All users who are following th given user")
+//                .link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/users/$id/following",
+//                      "All users which the giver user is following").build()
     }
 
     @GET
     @Path("/byEmail/{email}")
     @Produces("application/json")
     @Secured("users")
-    fun getById(@PathParam("email") email: String): Response {
+    fun getById(@PathParam("email") email: String, @Context uriInfo: UriInfo): User {
+        val user = userService.findByEmail(email)
 
-        val response = HashMap<String, Any>()
-        response["success"] = true
-        response["data"] = userService.findByEmail(email)
-        response["message"] = "Single User with email $email"
+        user.buildLinks(uriInfo)
 
-        return Response.ok(response).build()
+        return user
+
+//        val response = HashMap<String, Any>()
+//        response["success"] = true
+//        response["data"] = userService.findByEmail(email)
+//        response["message"] = "Single User with email $email"
+//
+//        return Response.ok(response).build()
     }
 
     @POST
@@ -91,11 +109,13 @@ class Users {
                @FormParam("location") location: String,
                @FormParam("password") password: String,
                @FormParam("username") username: String,
-               @FormParam("website") website: String): User {
+               @FormParam("website") website: String,
+               @Context uriInfo: UriInfo): User {
         var user = User(username, email, password, location, website, bio)
 
         user = userService.create(user)
         mailService.mailRegister(user)
+        user.buildLinks(uriInfo)
 
         return user
     }
@@ -118,35 +138,49 @@ class Users {
      */
     @PUT
     @Secured("users")
-    fun update(user: User): User {
+    fun update(user: User, @Context uriInfo: UriInfo): User {
+        user.buildLinks(uriInfo)
         return userService.update(user)
     }
 
     @GET
     @Secured("users")
     @Path("/{id}/followers")
-    fun followers(@PathParam("id") id: Long): List<User> {
-        return userService.followers(id)
+    fun followers(@PathParam("id") id: Long, @Context uriInfo: UriInfo): List<User> {
+        val users = userService.followers(id)
+        users.forEach {
+            it.buildLinks(uriInfo)
+        }
+        return users
     }
 
     @GET
     @Secured("users")
     @Path("/{id}/following")
-    fun following(@PathParam("id") id: Long): List<User> {
-        return userService.following(id)
+    fun following(@PathParam("id") id: Long, @Context uriInfo: UriInfo): List<User> {
+        val users = userService.following(id)
+        users.forEach {
+            it.buildLinks(uriInfo)
+        }
+        return users
     }
 
     @GET
     @Secured("users")
     @Path("/{id}/kweets")
-    fun tweets(@PathParam("id") id: Long): Response {
+    fun tweets(@PathParam("id") id: Long, @Context uriInfo: UriInfo): List<Kweet> {
+        val kweets = userService.kweets(id)
+        kweets.forEach {
+            it.buildLinks(uriInfo)
+        }
+        return kweets
 
-        val response = HashMap<String, Any>()
-        response["success"] = true
-        response["data"] = userService.kweets(id)
-        response["message"] = "List of kweets"
-
-        return Response.ok(response).link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/kweets", "").build()
+//        val response = HashMap<String, Any>()
+//        response["success"] = true
+//        response["data"] = userService.kweets(id)
+//        response["message"] = "List of kweets"
+//
+//        return Response.ok(response).link("http://localhost:8080/Kwetter-1.0-SNAPSHOT/api/kweets", "").build()
     }
 
     /**

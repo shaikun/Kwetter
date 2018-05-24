@@ -16,8 +16,10 @@ import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.PathParam
 import javax.ws.rs.Produces
+import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
+import javax.ws.rs.core.UriInfo
 
 
 @Stateless
@@ -43,8 +45,12 @@ class Kweets {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    fun all(): List<Kweet> {
-        return kweetService.all()
+    fun all(@Context uriInfo: UriInfo): List<Kweet> {
+        val kweets = kweetService.all()
+        kweets.forEach {
+            it.buildLinks(uriInfo)
+        }
+        return kweets
     }
 
     /**
@@ -53,10 +59,10 @@ class Kweets {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    fun find(@PathParam("id") id: Long): Kweet {
-
-        return kweetService.find(id)
-
+    fun find(@PathParam("id") id: Long, @Context uriInfo: UriInfo): Kweet {
+        val kweet = kweetService.find(id)
+        kweet.buildLinks(uriInfo)
+        return kweet
     }
 
     /**
@@ -72,10 +78,15 @@ class Kweets {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED, MediaType.MULTIPART_FORM_DATA)
-    fun create(@FormParam("text") text: String, @FormParam("user_id") user_id: String): Kweet {
+    fun create(@FormParam("text") text: String,
+               @FormParam("user_id") user_id: String,
+               @Context uriInfo: UriInfo): Kweet {
         val user = userService.find(user_id.toLong())
+        val kweet = kweetService.create(text, user.email)
 
-        return broadcast(kweetService.create(text, user.email))
+        kweet.buildLinks(uriInfo)
+
+        return broadcast(kweet)
     }
 
     private fun broadcast(kweet: Kweet): Kweet {
