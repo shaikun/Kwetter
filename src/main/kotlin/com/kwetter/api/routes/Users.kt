@@ -53,7 +53,6 @@ class Users {
     @GET
     @Path("/{id}")
     @Produces("application/json")
-    @Secured("users")
     fun getById(@PathParam("id") id: Long): Response {
 
         val response = HashMap<String, Any>()
